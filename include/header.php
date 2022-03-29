@@ -23,3 +23,22 @@
     </div>
 </nav>
 
+<?php
+
+function mysqlCon()
+{
+    $servername = "localhost";
+    $username = "root";
+    $password = "xMau8#e@nox?b6F?BF9dK&$?eWCa-ch8AYm";
+
+// Create connection
+    $conn = new mysqli($servername, $username, $password);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    return $conn;
+}
+
+function close($conn){
+    $conn->close();
+}

@@ -6,22 +6,22 @@
 <body class="bg-secondary">
 
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand text-light" href="#">Group 1 - Dentist Registry</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse float-right" id="navbarNavAltMarkup">
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link text-light" href="../update.php">Update</a>
-                <a class="nav-link text-light" href="../insert.php">Insert</a>
-                <a class="nav-link text-light" href="../delete.php">Delete</a>
-                <a class="nav-link text-light" href="../index.php">About</a>
+<header class="p-3 bg-dark text-white">
+    <div class="container-fluid mx-auto">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="../dentist/index.php" class="d-flex align-items-center  text-left text-white text-decoration-none h3">
+                Databases Project - Group 1
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center mb-md-0">
+            </ul>
+
+            <div class="text-end">
+                <a href="../dentist/login.php" type="button" class="btn btn-warning me-2">Login</a>
             </div>
         </div>
     </div>
-</nav>
+</header>
 
 <?php
 

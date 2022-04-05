@@ -8,8 +8,15 @@ include "mysqlfunc.php";
     <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a href="appointment.php" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>
-            <a href="procedures.php" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>
+            <?php
+            if(isset($_GET['user'])){
+                echo '<a href="appointment.php?user='.$_GET['user'].'" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>';
+                echo '<a href="procedures.php?user='.$_GET['user'].'" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>';
+            }else{
+                echo '<a href="appointment.php" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>';
+                echo '<a href="procedures.php" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>';
+            }
+            ?>
         </div>
     </div>
 </div>

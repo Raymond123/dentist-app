@@ -61,7 +61,7 @@ while($employee = $employees->fetch_assoc()){
 echo '</table>';
 
 
-echo "<a href='' class='text-link text-dark h6'>add new employee</a>";
+echo "<a href='new_employee.php?user=".$_GET['user']."' class='text-link text-dark h6'>add new employee</a>";
 echo '<br>';
 echo '<br>';
 
@@ -110,7 +110,7 @@ while($patient = $patients->fetch_assoc()){
 } // change 3
 echo '</table>';
 
-echo "<a href='' class='text-link text-dark h6'> add new patient </a>";
+echo "<a href='new_patient.php?user=".$_GET['user']."' class='text-link text-dark h6'> add new patient </a>";
 echo '<br>';
 echo '<br>';
 
@@ -118,24 +118,50 @@ echo '<div class="h3 text-dark">Appointments </div>';
 echo '<table class="table">';
 echo '<thead>';
 echo '<tr>';
-echo '    <th scope="col">appointment</th>';
-echo '    <th scope="col">Company</th>';
-echo '    <th scope="col">Company</th>';
+echo '    <th scope="col">Appointment ID</th>';
+echo '    <th scope="col">Patient ID</th>';
+echo '    <th scope="col">Dentist</th>';
+echo '    <th scope="col">Year</th>';
+echo '    <th scope="col">Month</th>';
+echo '    <th scope="col">Day</th>';
+echo '    <th scope="col">Start Hour</th>';
+echo '    <th scope="col">Start Minute</th>';
+echo '    <th scope="col">End Hour</th>';
+echo '    <th scope="col">End Minute</th>';
+echo '    <th scope="col">Type</th>';
+echo '    <th scope="col">Status</th>';
+echo '    <th scope="col">Assigned Room</th>';
 echo '</tr>';
 echo '</thead>';
-function newAptRow($i1, $i2, $i3, $i4){
+
+$appointments = $sql->getAppointment($conn);
+
+function newAptRow($id, $id2, $dentist, $appt_y, $appt_m, $appt_d, $start_h, $start_m, $end_h, $end_m, $type, $status, $room){
     echo '<tr>';
-    echo '    <td>'.$i1.'</td>';
-    echo '    <td>'.$i2.'</td>';
-    echo '    <td>'.$i3.'</td>';
-    echo '    <td>'.$i3.'</td>';
+    echo '    <td>'.$id.'</td>';
+    echo '    <td>'.$id2.'</td>';
+    echo '    <td>'.$dentist.'</td>';
+    echo '    <td>'.$appt_y.'</td>';
+    echo '    <td>'.$appt_m.'</td>';
+    echo '    <td>'.$appt_d.'</td>';
+    echo '    <td>'.$start_h.'</td>';
+    echo '    <td>'.$start_m.'</td>';
+    echo '    <td>'.$end_h.'</td>';
+    echo '    <td>'.$end_m.'</td>';
+    echo '    <td>'.$type.'</td>';
+    echo '    <td>'.$status.'</td>';
+    echo '    <td>'.$room.'</td>';
     echo '</tr>';
 }
 
-for($i=0;$i<3;$i++){
-    newAptRow("he", "ll","oo", "um");
-} // change 3
+while($apt = $appointments->fetch_assoc()){
+    newAptRow($apt['appointmnet_id'], $apt['patient_id'], $apt['dentist'], $apt['appt_year'],
+        $apt['appt_month'], $apt['appt_day'], $apt['start_hour'], $apt['start_minute'],
+        $apt['end_hour'], $apt['end_minute'], $apt['appointmnet_type'], $apt['status'], $apt['room_assigned']);
+}
 echo '</table>';
+
+echo "<a href='appointment.php?user=".$_GET['user']."' class='text-link text-dark h6'> new appointment </a>";
 ?>
 </div>
 

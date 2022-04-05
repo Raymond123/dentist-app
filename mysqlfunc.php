@@ -1,5 +1,7 @@
 <?php
-include "include/header.php";
+if(isset($_GET['user'])){
+    include "include/headerin.php";
+}else include "include/header.php";
 
 
 session_start();
@@ -24,6 +26,10 @@ class mysqlfunc
         $conn->close();
     }
 
+    function getProcedures($conn){
+
+    }
+
     function getBranches($conn){
         $sql = "SELECT `branch_numb` FROM `branch`";
         return $conn->query($sql);
@@ -36,6 +42,11 @@ class mysqlfunc
 
     function getPatients($conn){
         $qry = "SELECT * FROM `patient`";
+        return $conn->query($qry);
+    }
+
+    function getAppointment($conn){
+        $qry = "SELECT * FROM `appointment`";
         return $conn->query($qry);
     }
 
@@ -54,7 +65,25 @@ class mysqlfunc
     }
 
     function newUser($conn, $values){
-        $qry = "INSERT INTO `user`(`user_id`, `user_role`, `first_name`, `last_name`, `password`) VALUES (UUID_SHORT(),'".$values[0]."','".$values[1]."','".$values[2]."','".$values[3]."');";
+        $qry = "INSERT INTO `user`(`user_id`, `user_role`, `first_name`, `last_name`, `password`) 
+            VALUES (UUID_SHORT(),'".$values[0]."','".$values[1]."','".$values[2]."','".$values[3]."');";
+        return $conn->query($qry);
+    }
+
+    function newPatient($conn, $values){
+        $qry = "INSERT INTO `patient`(`patient_id`, `house_number`, `street`, `city`, `province`, `first_name`, `last_name`, `gender`, `insurance`, `SSN`, `email_address`, `date_of_birth`, `phone_number`)
+            VALUES 
+            (3,".$values[0].",'".$values[1]."','".$values[2]."','".$values[3]."','".$values[4]."',
+             '".$values[5]."','".$values[6]."','".$values[7]."','".$values[8]."',".$values[9].",
+             '".$values[10]."',".$values[11].")";
+        return $conn->query($qry);
+    }
+
+    function newEmployee($conn, $values){
+        $qry = "INSERT INTO `employee`(`employee_id`, `branch_numb`, `house_number`, `street`, `city`, `province`, `first_name`, `last_name`, `gender`, `role`, `user_type`, `SSN`, `Salary`) 
+            VALUES 
+            (UUID_SHORT(),$values[0],$values[1],$values[2],$values[3],$values[4],
+             $values[5],$values[6],$values[7],$values[8],$values[9],$values[10],$values[11])";
         return $conn->query($qry);
     }
 

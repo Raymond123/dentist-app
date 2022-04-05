@@ -1,7 +1,5 @@
 <?php
-include "include/header.php";
-
-$conn = mysqlCon();
+include "mysqlfunc.php";
 
 ?>
 
@@ -11,7 +9,7 @@ $conn = mysqlCon();
         <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <a href="appointment.php" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>
-            <a href="#" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>
+            <a href="procedures.php" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>
         </div>
     </div>
 </div>
@@ -20,19 +18,26 @@ $conn = mysqlCon();
         <h2 class="pb-2 border-bottom text-light">Our Branches</h2>
         <div class="row g-4 py-5 row-cols-3">
             <?php
+            $mysql = new mysqlfunc();
+            $conn = $mysql->mysqlCon();
+
             function newBranch($i)
             {
                 echo '<div class="feature col text-light rounded">';
                 echo "    <h2>Branch ". $i . "</h2>";
                 echo "   <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>";
-                echo '   <a href="#" class="icon-link text-warning"> Dentists at this branch </a>';
+                echo '   <a href="branch.php?branch='.$i.'" class="icon-link text-warning"> > Active Dentists </a>';
                 echo "</div>";
             }
 
-            for($i=0; $i<3; $i++){ // change 3 to the number of branches
-                newBranch($i);
+            $branches = $mysql->getBranches($conn);
+            if($branches->num_rows > 0) {
+                while ($branch = $branches->fetch_assoc()) {
+                    newBranch($branch['branch_numb']);
+                }
             }
 
+            $mysql->close($conn);
             ?>
         </div>
     </div>

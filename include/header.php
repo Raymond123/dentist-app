@@ -1,3 +1,6 @@
+<?php
+include "../mysqlfunc.php"
+?>
 <html>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -22,23 +25,3 @@
         </div>
     </div>
 </header>
-
-<?php
-
-function mysqlCon()
-{
-    $servername = "localhost";
-    $username = "root";
-    $password = "xMau8#e@nox?b6F?BF9dK&$?eWCa-ch8AYm";
-
-// Create connection
-    $conn = new mysqli($servername, $username, $password);
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    return $conn;
-}
-
-function close($conn){
-    $conn->close();
-}

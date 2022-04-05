@@ -3,7 +3,8 @@
         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
         </ul>
 
-        <p class="text-center text-light">© 2022 Group 4; Easton Smith, Jordan _, (other members)</p>
+        <p class="text-center text-light">© 2022 Group 4, CSI2132[A] Databases</p>
+        <p class="text-center text-light">Easton Smith, Jordan _, (other members)</p>
     </footer>
 </div>
 </body>

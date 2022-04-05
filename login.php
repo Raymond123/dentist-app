@@ -1,5 +1,5 @@
 <?php
-include "include/header.php";
+include "mysqlfunc.php";
 ?>
 
     <div class="vh-100 gradient-custom">
@@ -14,22 +14,54 @@ include "include/header.php";
                                 <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
                                 <p class="text-white-50 mb-5">Please enter your login and password!</p>
 
-                                <div class="form-outline form-white mb-4">
-                                    <input type="email" id="typeEmailX" class="form-control form-control-lg" />
-                                    <label class="form-label" for="typeEmailX">Email</label>
-                                </div>
+                                <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
-                                <div class="form-outline form-white mb-4">
-                                    <input type="password" id="typePasswordX" class="form-control form-control-lg" />
-                                    <label class="form-label" for="typePasswordX">Password</label>
-                                </div>
+                                    <div class="form-outline form-white mb-4">
+                                        <input name="user" type="text" id="typeEmailX" class="form-control form-control-lg"/>
+                                        <label class="form-label" for="typeEmailX">Email</label>
+                                    </div>
 
-                                <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+                                    <div class="form-outline form-white mb-4">
+                                        <input name="pass" type="password" id="typePasswordX" class="form-control form-control-lg"/>
+                                        <label class="form-label" for="typePasswordX">Password</label>
+                                    </div>
 
-                                <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                                    <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+                                    <input name="loginBut" class="button btn btn-outline-light btn-lg px-5" type="submit" value="Login">
 
+                                    <?php
+
+                                    if (isset($_POST['loginBut'])) {
+                                        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+                                            $sql = new mysqlfunc();
+                                            $conn = $sql->mysqlCon();
+
+                                            if (!($sql->isUser($conn, $_POST['user']))) {
+                                                err();
+                                            } else passCheck($sql, $conn);
+                                        }
+                                    }
+
+                                    function passCheck($sql, $conn){
+                                        // test for 'pass' ;
+                                        $hp = hash('sha256', $_POST['pass']);
+                                        $pass_chk = $sql->isUserPass($conn, $_POST['user']);
+                                        if ($pass_chk['password'] == $hp) {
+                                            echo "true";
+                                            header("Location:admin.php?user=" . $_POST['user']);
+                                        } else {
+                                            err();
+                                        }
+                                    }
+
+                                    function err(){
+                                        // echo/print incorrect user/pass
+                                        echo '<br><div class="h5 text-danger">Incorrect username/password</div>';
+                                    }
+
+                                    ?>
+                                </form>
                             </div>
-
                         </div>
                     </div>
                 </div>

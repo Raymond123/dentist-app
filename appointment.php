@@ -1,5 +1,5 @@
 <?php
-include "include/header.php";
+include "mysqlfunc.php";
 
 ?>
 
@@ -11,7 +11,7 @@ include "include/header.php";
                 <div class="col container mt-5 text-light p-4 rounded">
         <div class="col">
             <h4 class="mb-3">Billing address</h4>
-            <form class="needs-validation" novalidate="">
+            <form class="needs-validation" novalidate="" method="post">
                 <div class="row">
                     <div class="col-sm">
                         <label for="firstName" class="form-label">First name</label>

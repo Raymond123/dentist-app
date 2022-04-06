@@ -46,9 +46,12 @@ include "mysqlfunc.php";
                                         // test for 'pass' ;
                                         $hp = hash('sha256', $_POST['pass']);
                                         $pass_chk = $sql->isUserPass($conn, $_POST['user']);
-                                        if ($pass_chk['password'] == $hp) {
+                                        if ($pass_chk['password'] == $hp ) {
                                             echo "true";
-                                            header("Location:admin.php?user=" . $_POST['user']);
+                                            if ($sql->admin($conn, $hp))
+                                                header("Location:admin.php?user=" . $_POST['user'] . "&admin=true");
+                                            else header("Location:index.php?user=" . $_POST['user'] . "&admin=false");
+
                                         } else {
                                             err();
                                         }

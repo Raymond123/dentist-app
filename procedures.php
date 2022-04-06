@@ -5,22 +5,27 @@ include "mysqlfunc.php";
         <h2 class="pb-2 border-bottom text-light">Available Procedures</h2>
         <div class="row g-4 py-5 row-cols-3">
             <?php
-            function newProc($i)
+            function newProc($i, $l)
             {
                 echo '<div class="feature col text-light rounded">';
-                echo "    <h2>Procedure ". $i . "</h2>";
-                echo "   <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>";
+                echo "   <h2> ". $i . "</h2>";
+                echo "   <p>$l</p>";
                 //echo '   <a href="#" class="icon-link text-warning"> Dentists at this branch </a>';
                 echo "</div>";
             }
 
-            for($i=0; $i<3; $i++){ // change 3 to the number of branches
-                newProc($i);
+            $sql = new mysqlfunc();
+            $conn = $sql->mysqlCon();
+
+            $procs = $sql->getProcedures($conn);
+            while($proc = $procs->fetch_assoc()){ // change 3 to the number of branches
+                newProc($proc['title'], $proc['description']);
             }
 
             ?>
         </div>
     </div>
 <?php
+echo "<div class='text-light text-center'>Dental procedure information is from https://www.yourdentistryguide.com/procedures/ </div>";
 include "include/footer.php";
 

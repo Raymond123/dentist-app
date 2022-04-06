@@ -23,14 +23,13 @@ echo '    <th scope="col">First Name</th>';
 echo '    <th scope="col">Last Name</th>';
 echo '    <th scope="col">Gender</th>';
 echo '    <th scope="col">Role</th>';
-echo '    <th scope="col">User-Type</th>';
 echo '    <th scope="col">SSN</th>';
 echo '    <th scope="col">Salary</th>';
 
 echo '</tr>';
 echo '</thead>';
 
-function newEmRow($id, $branch, $house, $street, $city, $prov, $fname, $lname, $gender, $role, $user, $ssn, $salary){
+function newEmRow($id, $branch, $house, $street, $city, $prov, $fname, $lname, $gender, $role, $ssn, $salary){
     echo '<tr>';
     echo '    <td>'.$id.'</td>';
     echo '    <td>'.$branch.'</td>';
@@ -42,7 +41,6 @@ function newEmRow($id, $branch, $house, $street, $city, $prov, $fname, $lname, $
     echo '    <td>'.$lname.'</td>';
     echo '    <td>'.$gender.'</td>';
     echo '    <td>'.$role.'</td>';
-    echo '    <td>'.$user.'</td>';
     echo '    <td>'.$ssn.'</td>';
     echo '    <td>'.$salary.'</td>';
     echo '</tr>';
@@ -55,8 +53,7 @@ $employees = $sql->getEmployee($conn);
 while($employee = $employees->fetch_assoc()){
     newEmRow($employee['employee_id'], $employee['branch_numb'],$employee['house_number'],
         $employee['street'], $employee['city'],$employee['province'], $employee['first_name'],
-        $employee['last_name'],$employee['gender'],$employee['role'], $employee['user_type'],
-        $employee['SSN'], $employee['Salary']);
+        $employee['last_name'],$employee['gender'],$employee['role'], $employee['SSN'], $employee['Salary']);
 } // change 3
 echo '</table>';
 

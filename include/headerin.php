@@ -23,7 +23,12 @@ include "../mysqlfunc.php"
 
             <div class="text-end">
                 <?php
-                echo '<a href="../dentist/admin.php?user='.$_GET['user'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>'
+                if($_GET['admin'] == true)
+                    echo '<a href="../dentist/admin.php?user='.$_GET['user'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
+
+                if($_GET['admin'] == false)
+                    echo '<a href="../dentist/index.php?user='.$_GET['user'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
+
                 ?>
             </div>
         </div>

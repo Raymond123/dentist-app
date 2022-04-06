@@ -13,26 +13,26 @@ include "mysqlfunc.php";
             <h4 class="mb-3">Billing address</h4>
             <form class="needs-validation" novalidate="" method="post">
                 <div class="row">
-                    <div class="col-sm">
-                        <label for="firstName" class="form-label">First name</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                    <div class="col-12">
+                        <label for="date" class="form-label">Date</label>
+                        <input name="date" type="date" class="form-control" id="date" placeholder="" value="" required="">
                         <div class="invalid-feedback">
                             Valid first name is required.
                         </div>
                     </div>
 
-                    <div class="col-sm">
-                        <label for="lastName" class="form-label">Last name</label>
-                        <input type="text" class="form-control" id="lastName" placeholder="" value="" required="">
+                    <div class="col-6">
+                        <label for="stime" class="form-label">Start Time</label>
+                        <input name="stime" type="time" class="form-control" id="stime" placeholder="" value="" required="">
                         <div class="invalid-feedback">
                             Valid last name is required.
                         </div>
                     </div>
 
-                    <div class="col-12">
-                        <label for="username" class="form-label">Username</label>
+                    <div class="col-6">
+                        <label for="etime" class="form-label">End Time</label>
                         <div class="input-group has-validation">
-                            <input type="text" class="form-control" id="username" placeholder="Username" required="">
+                            <input name="etime" type="time" class="form-control" id="etime" placeholder="" required="">
                             <div class="invalid-feedback">
                                 Your username is required.
                             </div>
@@ -40,57 +40,23 @@ include "mysqlfunc.php";
                     </div>
 
                     <div class="col-12">
-                        <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-                        <input type="email" class="form-control" id="email" placeholder="you@example.com">
-                        <div class="invalid-feedback">
-                            Please enter a valid email address for shipping updates.
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="1234 Main St" required="">
-                        <div class="invalid-feedback">
-                            Please enter your shipping address.
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <label for="address2" class="form-label">Address 2 <span class="text-muted">(Optional)</span></label>
-                        <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-                    </div>
-
-                    <div class="col-md-5">
-                        <label for="country" class="form-label">Country</label>
-                        <select class="form-select" id="country" required="">
-                            <option value="">Choose...</option>
-                            <option>United States</option>
+                        <label for="email" class="form-label">Procedure</label>
+                        <select name="proc" class="form-control" id="email" required="">
+                            <option value="">Procedure</option>
+                            <option>Dental Fillings</option>
+                            <option>Bonding</option>
+                            <option>Orthodontics</option>
+                            <option>Root Canals</option>
+                            <option>Dental Crowns</option>
+                            <option>Dental Bridges</option>
+                            <option>Dentures</option>
+                            <option>Oral and Maxillofacial Procedures</option>
+                            <option>Periodontal Treatment</option>
+                            <option>Laser Procedures</option>
                         </select>
-                        <div class="invalid-feedback">
-                            Please select a valid country.
-                        </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <label for="state" class="form-label">State</label>
-                        <select class="form-select" id="state" required="">
-                            <option value="">Choose...</option>
-                            <option>California</option>
-                        </select>
-                        <div class="invalid-feedback">
-                            Please provide a valid state.
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="zip" class="form-label">Zip</label>
-                        <input type="text" class="form-control" id="zip" placeholder="" required="">
-                        <div class="invalid-feedback">
-                            Zip code required.
-                        </div>
-                    </div>
                 </div>
-
                 <hr class="my-4">
 
                 <button class="w-100 btn btn-warning btn-lg" type="submit">Finalize Appointment</button>

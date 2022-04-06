@@ -27,12 +27,19 @@ class mysqlfunc
     }
 
     function getProcedures($conn){
-
+        $qry = "SELECT * FROM `procedures`";
+        return $conn->query($qry);
     }
 
     function getBranches($conn){
-        $sql = "SELECT `branch_numb` FROM `branch`";
+        $sql = "SELECT `city` FROM `branch`";
         return $conn->query($sql);
+    }
+
+    function branchInfo($conn, $branch){
+        $sql = "SELECT * FROM `branch` WHERE `city` = '". $branch ."'";
+        $res = $conn->query($sql);
+        return $res->fetch_assoc();
     }
 
     function getEmployee($conn){
@@ -62,6 +69,16 @@ class mysqlfunc
         $pass_qry = "SELECT `password` FROM `user` WHERE `first_name` = '" . $user . "'";
         $pass = $conn->query($pass_qry);
         return $pass->fetch_assoc();
+    }
+
+    function admin($conn, $pass){
+        $idqry = "SELECT `user_id` FROM `user` WHERE `password`='".$pass."'";
+        $id = $conn->query($idqry);
+        $uid = $id->fetch_assoc();
+        $qry = "SELECT `role` FROM `employee` WHERE `user_id` = ".$uid['user_id'];
+        $roles = $conn->query($qry);
+        $role = $roles->fetch_assoc();
+        return ($role['role'] == 'manager');
     }
 
     function newUser($conn, $values){

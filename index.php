@@ -10,10 +10,10 @@ include "mysqlfunc.php";
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <?php
             if(isset($_GET['user'])){
-                echo '<a href="appointment.php?user='.$_GET['user'].'" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>';
-                echo '<a href="procedures.php?user='.$_GET['user'].'" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>';
+                echo '<a href="appointment.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>';
+                echo '<a href="procedures.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>';
             }else{
-                echo '<a href="appointment.php" class="btn btn-warning btn-lg px-4 gap-3">Make Appointment</a>';
+                echo '<a href="login.php" class="btn btn-warning btn-lg px-4 gap-3">Login to Make Appointments</a>';
                 echo '<a href="procedures.php" class="btn btn-outline-warning btn-lg px-4">Available Procedures</a>';
             }
             ?>

@@ -13,7 +13,7 @@ include "mysqlfunc.php";
             <h4 class="mb-3">Billing address</h4>
             <form class="needs-validation" novalidate="" method="post">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <label for="date" class="form-label">Date</label>
                         <input name="date" type="date" class="form-control" id="date" placeholder="" value="" required="">
                         <div class="invalid-feedback">
@@ -29,37 +29,41 @@ include "mysqlfunc.php";
                         </div>
                     </div>
 
-                    <div class="col-6">
-                        <label for="etime" class="form-label">End Time</label>
-                        <div class="input-group has-validation">
-                            <input name="etime" type="time" class="form-control" id="etime" placeholder="" required="">
-                            <div class="invalid-feedback">
-                                Your username is required.
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-12">
                         <label for="email" class="form-label">Procedure</label>
                         <select name="proc" class="form-control" id="email" required="">
                             <option value="">Procedure</option>
-                            <option>Dental Fillings</option>
-                            <option>Bonding</option>
-                            <option>Orthodontics</option>
-                            <option>Root Canals</option>
-                            <option>Dental Crowns</option>
-                            <option>Dental Bridges</option>
-                            <option>Dentures</option>
-                            <option>Oral and Maxillofacial Procedures</option>
-                            <option>Periodontal Treatment</option>
-                            <option>Laser Procedures</option>
+                            <?php
+                            $sql = new mysqlfunc();
+                            $conn = $sql->mysqlCon();
+
+                            $proc = $sql->getProcedures($conn);
+                            while($pr = $proc->fetch_assoc()){
+                                echo "<option>". $pr['title'] ."</option>";
+                            }
+                            ?>
                         </select>
                     </div>
 
                 </div>
                 <hr class="my-4">
 
-                <button class="w-100 btn btn-warning btn-lg" type="submit">Finalize Appointment</button>
+                <button name="sub" class="w-100 btn btn-warning btn-lg" type="submit">Finalize Appointment</button>
+
+                <?php
+                if(isset($_POST['sub'])) {
+                    $date = explode("-", $_POST['date']);
+                    $stime = explode(":", $_POST['stime']);
+                    $values = [$date[0], $date[1], $date[2], $stime[0], $stime[1], $_POST['proc']];
+
+                    $sql = new mysqlfunc();
+                    $conn = $sql->mysqlCon();
+
+                    if($sql->newAppt($conn, $values)){
+                        echo "<div class='h5 text-light'> Successfully Created Appointment </div>";
+                    }
+                }
+                ?>
             </form>
         </div>
     </div>

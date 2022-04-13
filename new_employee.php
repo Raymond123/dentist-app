@@ -1,5 +1,8 @@
 <?php
 include "mysqlfunc.php";
+
+$sql = new mysqlfunc();
+$conn = $sql->mysqlCon();
 ?>
 
     <main>
@@ -38,7 +41,7 @@ include "mysqlfunc.php";
 
                                     <div class="col-3">
                                         <label for="city" class="form-label">City</label>
-                                        <input name="city" class="form-control" id="city" placeholder="" required="">
+                                        <input name="city" class="form-control" id="city" required="">
                                         <div class="invalid-feedback">
                                             Please provide a valid city.
                                         </div>
@@ -46,7 +49,15 @@ include "mysqlfunc.php";
 
                                     <div class="col-3">
                                         <label for="prov" class="form-label">Province</label>
-                                        <input name="prov" type="text" class="form-control" id="prov" placeholder="" required="">
+                                        <select name="prov" class="form-control" id="prov" required="">
+                                            <option value="">Province</option>
+                                            <option>ON</option>
+                                            <option>QC</option>
+                                            <option>NL</option>
+                                            <option>BC</option>
+                                            <option>AB</option>
+                                            <option>MB</option>
+                                        </select>
                                         <div class="invalid-feedback">
                                             Please enter a valid province.
                                         </div>
@@ -64,7 +75,15 @@ include "mysqlfunc.php";
 
                                     <div class="col-8">
                                         <label for="branch" class="form-label">Branch</label>
-                                        <input name="branch" type="text" class="form-control" id="branch" placeholder="" required="">
+                                        <select name="branch" class="form-control" id="branch">
+                                            <option value="">branches</option>
+                                            <?php
+                                            $branches = $sql->getBranches($conn);
+                                            while($branch = $branches->fetch_assoc()){
+                                                echo "<option> ". $branch['city'] ." </option>";
+                                            }
+                                            ?>
+                                        </select>
                                         <div class="invalid-feedback">
                                             Please enter a valid province.
                                         </div>
@@ -72,7 +91,7 @@ include "mysqlfunc.php";
 
                                     <div class="col-4">
                                         <label for="ssn" class="form-label">SSN</label>
-                                        <input name="ssn" type="text" class="form-control" id="ssn" placeholder="XXX-XX-XXXX" required="">
+                                        <input name="ssn" type="text" class="form-control" id="ssn" placeholder="XXX XX XXXX" required="">
                                         <div class="invalid-feedback">
                                             Please enter a valid SSN.
                                         </div>
@@ -80,7 +99,7 @@ include "mysqlfunc.php";
 
                                     <div class="col-8">
                                         <label for="salary" class="form-label">Salary</label>
-                                        <input name="dob" type="text" class="form-control" id="salary" placeholder="" required="">
+                                        <input name="salary" type="text" class="form-control" id="salary" placeholder="" required="">
                                         <div class="invalid-feedback">
                                             Please enter a valid month.
                                         </div>
@@ -90,8 +109,8 @@ include "mysqlfunc.php";
                                         <label for="type" class="form-label">User Type</label>
                                         <select name="type" class="form-control" id="type" required="">
                                             <option value="">..</option>
-                                            <option>Admin</option>
-                                            <option>Dentist</option>
+                                            <option>admin</option>
+                                            <option>dentist</option>
                                         </select>
                                         <div class="invalid-feedback">
                                             Please enter a valid month.
@@ -100,7 +119,7 @@ include "mysqlfunc.php";
 
                                     <div class="col-6">
                                         <label for="phone" class="form-label">Phone #</label>
-                                        <input name="phone" type="text" class="form-control" id="phone" placeholder="(123) 456-7890" required="">
+                                        <input name="phone" type="text" class="form-control" id="phone" placeholder="123 456 7890" required="">
                                         <div class="invalid-feedback">
                                             Please enter a valid month.
                                         </div>
@@ -108,16 +127,13 @@ include "mysqlfunc.php";
 
                                     <hr class="my-4">
 
-                                    <button name="sub" class="w-100 btn btn-warning btn-lg" type="submit">Add Patient</button>
+                                    <button name="sub" class="w-100 btn btn-warning btn-lg" type="submit">Add Employee</button>
                                 </div>
                             </form>
 
                             <?php
                             if(isset($_POST['sub'])){
-                                $sql = new mysqlfunc();
-                                $conn = $sql->mysqlCon();
-
-                                $pass = hash("sha256", $_POST['pass']);
+                                $pass = $sql->isUserPass($conn, $_POST['fname']);
 
                                 $house_num = preg_replace("/[^0-9]/", '', $_POST['addr']);
                                 $street = preg_replace("/[^a-z\s]/",'', strtolower($_POST['addr']));
@@ -125,12 +141,17 @@ include "mysqlfunc.php";
                                 $ssn = preg_replace("/[^0-9]/", '', $_POST['ssn']);
                                 $phone = preg_replace("/[^0-9]/", '', $_POST['phone']);
 
-                                $values = [(int) $house_num, $street, strtolower($_POST['city']),
-                                    strtolower($_POST['prov']),strtolower($_POST['fname']),strtolower($_POST['lname']),
-                                    $_POST['gender'],$_POST['insurance'], (int) $ssn,
-                                    $_POST['email'],$_POST['dob'],(int) $phone];
-                                if($sql->newPatient($conn, $values)){
-                                    echo "<div class='h5 text-light'> Successfully Created Patient </div>";
+                                $branchNum = $sql->branchInfo($conn, $_POST['branch']);
+
+                                // `branch_numb`, `house_number`, `street`, `city`, `province`, `gender`, `role`, `SSN`, `Salary`, `name`, `first_name`, `last_name`, `password`
+                                $values = [$branchNum['branch_numb'], $house_num, $street, strtolower($_POST['city']),
+                                    $_POST['prov'],$_POST['gender'],$_POST['type'],$ssn, $_POST['salary'],
+                                    strtolower($_POST['fname']), strtolower($_POST['lname']), $pass['password']];
+                                if($sql->newEmployee($conn, $values)){
+                                    echo "<div class='h5 text-light'> Successfully Created Employee </div>";
+                                }
+                                foreach($values as $v){
+                                    echo $v . "<br>";
                                 }
 
                                 $_POST['sub'] = NULL;

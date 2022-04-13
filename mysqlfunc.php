@@ -32,7 +32,7 @@ class mysqlfunc
     }
 
     function getBranches($conn){
-        $sql = "SELECT `city` FROM `branch`";
+        $sql = "SELECT * FROM `branch`";
         return $conn->query($sql);
     }
 
@@ -71,19 +71,19 @@ class mysqlfunc
         return $pass->fetch_assoc();
     }
 
-    function admin($conn, $pass){
-        $idqry = "SELECT `user_id` FROM `user` WHERE `password`='".$pass."'";
+    function admin($conn, $fname){
+        $idqry = "SELECT `last_name` FROM `user` WHERE `first_name`='".$fname."'";
         $id = $conn->query($idqry);
         $uid = $id->fetch_assoc();
-        $qry = "SELECT `role` FROM `employee` WHERE `user_id` = ".$uid['user_id'];
+        $qry = "SELECT `role` FROM `employee` WHERE `first_name` = '". $fname . "' AND `last_name` = '".$uid['last_name']."'";
         $roles = $conn->query($qry);
         $role = $roles->fetch_assoc();
-        return ($role['role'] == 'manager');
+        return ($role['role'] == 'admin') || ($role['role'] == 'manager');
     }
 
     function newUser($conn, $values){
-        $qry = "INSERT INTO `user`(`user_id`, `user_role`, `first_name`, `last_name`, `password`) 
-            VALUES (UUID_SHORT(),'".$values[0]."','".$values[1]."','".$values[2]."','".$values[3]."');";
+        $qry = "INSERT INTO `user`(`user_id`, `first_name`, `last_name`, `password`) 
+            VALUES (UUID_SHORT(),'".$values[0]."','".$values[1]."','".$values[2]."');";
         return $conn->query($qry);
     }
 
@@ -97,10 +97,35 @@ class mysqlfunc
     }
 
     function newEmployee($conn, $values){
-        $qry = "INSERT INTO `employee`(`employee_id`, `branch_numb`, `house_number`, `street`, `city`, `province`, `first_name`, `last_name`, `gender`, `role`, `user_type`, `SSN`, `Salary`) 
+        $qry = "INSERT INTO `employee`(`employee_id`, `branch_numb`, `house_number`, `street`, `city`, `province`, `gender`, `role`, `SSN`, `Salary`, `name`, `first_name`, `last_name`, `password`) 
             VALUES 
-            (UUID_SHORT(),$values[0],$values[1],$values[2],$values[3],$values[4],
-             $values[5],$values[6],$values[7],$values[8],$values[9],$values[10],$values[11])";
+            (UUID_SHORT(),".$values[0].",".$values[1].",'".$values[2]."','".$values[3]."','".$values[4]."',
+             '".$values[5]."','".$values[6]."',".$values[7].",".$values[8].",'".$values[9]."','".$values[9]."','".$values[10]."','".$values[11]."')";
+        return $conn->query($qry);
+    }
+
+    function newAppt($conn, $values){
+        $qry = "INSERT INTO `appointment`(`appointment_id`, `patient_id`, `appt_year`, `appt_month`, `appt_day`, `start_hour`, `start_minute`, `appointment_type`, `status`) 
+            VALUES 
+            (UUID_SHORT(),'12345',
+            ".$values[0].",".$values[1].",".$values[2].",
+             ".$values[3].",".$values[4].",'".$values[5]."',
+             'coming up')";
+        return $conn->query($qry);
+    }
+
+    function updateAppt($conn, $aid, $values){
+        $qry = "UPDATE `appointment` SET `end_hour`=".$values[0].",`end_minute`=".$values[1].",`status`='finished' WHERE appointment_id = ".$aid.";";
+        return $conn->query($qry);
+    }
+
+    function addDentRm($conn, $values, $aid){
+        $qry = "UPDATE `appointment` SET `dentist`='".$values[0]."',`room_assigned`=".$values[1].",`status`='ongoing' WHERE appointment_id = ".$aid.";";
+        return $conn->query($qry);
+    }
+
+    function cancelAppt($conn, $aid){
+        $qry = "UPDATE `appointment` SET `status`='canceled' WHERE appointment_id = ".$aid.";";
         return $conn->query($qry);
     }
 

@@ -4,9 +4,7 @@ include "mysqlfunc.php";
 <div class="container mt-3">
 <?php
 echo '<div class="h3 text-light">Welcome ' . $_GET['user'] . '! </div>';
-?>
-<a href="newuser.php" class="h5 text-light icon-link"> > Add new user </a>
-<?php
+echo '<a href="newuser.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="h5 text-light icon-link"> > Add new user </a>';
 echo '</br></br>';
 // table headers
 echo '<div class="h3 text-dark">Employees </div>';
@@ -58,7 +56,7 @@ while($employee = $employees->fetch_assoc()){
 echo '</table>';
 
 
-echo "<a href='new_employee.php?user=".$_GET['user']."' class='text-link text-dark h6'>add new employee</a>";
+echo "<a href='new_employee.php?user=".$_GET['user']."&admin=".$_GET['admin']."' class='text-link text-dark h6'>add new employee</a>";
 echo '<br>';
 echo '<br>';
 
@@ -81,7 +79,7 @@ echo '    <th scope="col">Date of Birth</th>';
 echo '    <th scope="col">Phone #</th>';
 echo '</tr>';
 echo '</thead>';
-function newPatRow($id, $house, $street, $city, $prov, $fname, $lname, $gender, $insurance, $ssn, $email, $dob, $phone){
+function newRow($id, $house, $street, $city, $prov, $fname, $lname, $gender, $insurance, $ssn, $email, $dob, $phone){
     echo '<tr>';
     echo '    <td>'.$id.'</td>';
     echo '    <td>'.$house.'</td>';
@@ -101,13 +99,13 @@ function newPatRow($id, $house, $street, $city, $prov, $fname, $lname, $gender, 
 
 $patients = $sql->getPatients($conn);
 while($patient = $patients->fetch_assoc()){
-    newPatRow($patient['patient_id'], $patient['house_number'],$patient['street'],$patient['city'], $patient['province'],
+    newRow($patient['patient_id'], $patient['house_number'],$patient['street'],$patient['city'], $patient['province'],
         $patient['first_name'],$patient['last_name'], $patient['gender'],$patient['insurance'],
         $patient['SSN'], $patient['email_address'], $patient['date_of_birth'],$patient['phone_number']);
 } // change 3
 echo '</table>';
 
-echo "<a href='new_patient.php?user=".$_GET['user']."' class='text-link text-dark h6'> add new patient </a>";
+echo "<a href='new_patient.php?user=".$_GET['user']."&admin=".$_GET['admin']."' class='text-link text-dark h6'> add new patient </a>";
 echo '<br>';
 echo '<br>';
 
@@ -133,33 +131,74 @@ echo '</thead>';
 
 $appointments = $sql->getAppointment($conn);
 
-function newAptRow($id, $id2, $dentist, $appt_y, $appt_m, $appt_d, $start_h, $start_m, $end_h, $end_m, $type, $status, $room){
-    echo '<tr>';
-    echo '    <td>'.$id.'</td>';
-    echo '    <td>'.$id2.'</td>';
-    echo '    <td>'.$dentist.'</td>';
-    echo '    <td>'.$appt_y.'</td>';
-    echo '    <td>'.$appt_m.'</td>';
-    echo '    <td>'.$appt_d.'</td>';
-    echo '    <td>'.$start_h.'</td>';
-    echo '    <td>'.$start_m.'</td>';
-    echo '    <td>'.$end_h.'</td>';
-    echo '    <td>'.$end_m.'</td>';
-    echo '    <td>'.$type.'</td>';
-    echo '    <td>'.$status.'</td>';
-    echo '    <td>'.$room.'</td>';
-    echo '</tr>';
-}
 
 while($apt = $appointments->fetch_assoc()){
-    newAptRow($apt['appointmnet_id'], $apt['patient_id'], $apt['dentist'], $apt['appt_year'],
+    newRow($apt['appointment_id'], $apt['patient_id'], $apt['dentist'], $apt['appt_year'],
         $apt['appt_month'], $apt['appt_day'], $apt['start_hour'], $apt['start_minute'],
         $apt['end_hour'], $apt['end_minute'], $apt['appointmnet_type'], $apt['status'], $apt['room_assigned']);
 }
 echo '</table>';
 
-echo "<a href='appointment.php?user=".$_GET['user']."' class='text-link text-dark h6'> new appointment </a>";
+echo "<a href='appointment.php?user=".$_GET['user']."&admin=".$_GET['admin']."' class='text-link text-dark h6'> new appointment </a><br><br>";
 ?>
+    <form method="post">
+        <select class="" name="aid" id="aid">
+            <option value=""> appointment_id </option>
+            <?php
+            $aids = $sql->getAppointment($conn);
+            while($aid = $aids->fetch_assoc()){
+                if($aid['status'] != 'finished' && $aid['status'] != 'canceled') echo "<option>". $aid['appointment_id'] ."</option>";
+            }
+            ?>
+        </select>
+        <button class="btn-dark" type="submit" name="fin" value="Finish Appointment"> finish </button>
+        <button class="btn-dark" type="submit" name="can" value="Cancel Appointment"> cancel </button>
+        <br>
+        <select name="dentist" id="dent">
+            <option value="">Dentist</option>
+            <?php
+            $dentists = $sql->getEmployee($conn);
+            while($dentist = $dentists->fetch_assoc()){
+                if($dentist['role'] == 'dentist'){
+                    echo "<option>".$dentist['first_name']." ". $dentist['last_name'] ."</option>";
+                }
+            }
+            ?>
+        </select>
+
+        <select name="room" id="rm">
+            <option value=""> Room # </option>
+            <?php
+            for($i=1; $i<7; $i++){
+                echo "<option>".$i."</option>";
+            }
+            ?>
+        </select>
+        <button class="btn-dark" type="submit" name="sub" value="Add dentist room"> add dentist and room </button>
+    </form>
+    <?php
+    echo "<div class='h5 text-light'> ".$_GET['outcome']." </div>";
+
+    date_default_timezone_set("America/Toronto");
+    $time = date("h:i:sa");
+    if(isset($_POST['fin'])) {
+        if ($sql->updateAppt($conn, $_POST['aid'], explode(":",$time))) {
+            header("Location:admin.php?user=".$_GET['user']."&admin=".$_GET['admin']."&outcome=success");
+        }
+    }
+
+    if(isset($_POST['can'])) {
+        if ($sql->cancelAppt($conn, $_POST['aid'])) {
+            header("Location:admin.php?user=".$_GET['user']."&admin=".$_GET['admin']."&outcome=canceled");
+        }
+    }
+
+    if(isset($_POST['sub'])) {
+        if ($sql->addDentRm($conn, [$_POST['dentist'], $_POST['room']], $_POST['aid'])) {
+            header("Location:admin.php?user=".$_GET['user']."&admin=".$_GET['admin']."&outcome=success");
+        }
+    }
+    ?>
 </div>
 
 <?php

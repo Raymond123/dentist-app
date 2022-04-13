@@ -13,7 +13,7 @@ include "../mysqlfunc.php"
     <div class="container-fluid mx-auto">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <?php
-            echo '<a href="../dentist/index.php?user='.$_GET['user'].'" class="d-flex align-items-center  text-left text-white text-decoration-none h3">'
+            echo '<a href="../dentist/index.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="d-flex align-items-center  text-left text-white text-decoration-none h3">'
                ?>
                 Databases Project - Group 1
             </a>
@@ -23,11 +23,11 @@ include "../mysqlfunc.php"
 
             <div class="text-end">
                 <?php
-                if($_GET['admin'] == true)
-                    echo '<a href="../dentist/admin.php?user='.$_GET['user'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
+                if($_GET['admin'] == 'true')
+                    echo '<a href="../dentist/admin.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
 
-                if($_GET['admin'] == false)
-                    echo '<a href="../dentist/index.php?user='.$_GET['user'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
+                if($_GET['admin'] == 'false')
+                    echo '<a href="../dentist/index.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" type="button" class="text-link text-warning me-2">'.$_GET['user'].' account</a>';
 
                 ?>
             </div>

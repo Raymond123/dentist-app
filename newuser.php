@@ -61,7 +61,7 @@ include "mysqlfunc.php";
                                 $conn = $sql->mysqlCon();
 
                                 $pass = hash("sha256", $_POST['pass']);
-                                $values = [$_POST['role'], strtolower($_POST['fname']), strtolower($_POST['lname']), $pass];
+                                $values = [strtolower($_POST['fname']), strtolower($_POST['lname']), $pass];
                                 if($sql->newUser($conn, $values)){
                                     echo "<div class='h5 text-light'> Successfully Created New User </div>";
                                 }

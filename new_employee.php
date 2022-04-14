@@ -125,6 +125,14 @@ $conn = $sql->mysqlCon();
                                         </div>
                                     </div>
 
+                                    <div class="col-12">
+                                        <label for="pass" class="form-label">Password</label>
+                                        <input name="pass" type="password" class="form-control" id="pass" placeholder="" required="">
+                                        <div class="invalid-feedback">
+                                            Please enter a valid month.
+                                        </div>
+                                    </div>
+
                                     <hr class="my-4">
 
                                     <button name="sub" class="w-100 btn btn-warning btn-lg" type="submit">Add Employee</button>
@@ -133,25 +141,20 @@ $conn = $sql->mysqlCon();
 
                             <?php
                             if(isset($_POST['sub'])){
-                                $pass = $sql->isUserPass($conn, $_POST['fname']);
-
+                                $pass = hash("sha256", $_POST['pass']);
                                 $house_num = preg_replace("/[^0-9]/", '', $_POST['addr']);
                                 $street = preg_replace("/[^a-z\s]/",'', strtolower($_POST['addr']));
-
                                 $ssn = preg_replace("/[^0-9]/", '', $_POST['ssn']);
                                 $phone = preg_replace("/[^0-9]/", '', $_POST['phone']);
-
                                 $branchNum = $sql->branchInfo($conn, $_POST['branch']);
 
                                 // `branch_numb`, `house_number`, `street`, `city`, `province`, `gender`, `role`, `SSN`, `Salary`, `name`, `first_name`, `last_name`, `password`
-                                $values = [$branchNum['branch_numb'], $house_num, $street, strtolower($_POST['city']),
+                                $values = [$branchNum['branch_numb'], $house_num, strtolower($street), strtolower($_POST['city']),
                                     $_POST['prov'],$_POST['gender'],$_POST['type'],$ssn, $_POST['salary'],
-                                    strtolower($_POST['fname']), strtolower($_POST['lname']), $pass['password']];
+                                    strtolower($_POST['fname']), strtolower($_POST['lname']), $pass];
+
                                 if($sql->newEmployee($conn, $values)){
                                     echo "<div class='h5 text-light'> Successfully Created Employee </div>";
-                                }
-                                foreach($values as $v){
-                                    echo $v . "<br>";
                                 }
 
                                 $_POST['sub'] = NULL;

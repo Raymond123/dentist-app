@@ -78,7 +78,7 @@ class mysqlfunc
         $qry = "SELECT `role` FROM `employee` WHERE `first_name` = '". $fname . "' AND `last_name` = '".$uid['last_name']."'";
         $roles = $conn->query($qry);
         $role = $roles->fetch_assoc();
-        return ($role['role'] == 'admin') || ($role['role'] == 'manager');
+        return $role['role'];
     }
 
     function newUser($conn, $values){
@@ -87,12 +87,20 @@ class mysqlfunc
         return $conn->query($qry);
     }
 
-    function newPatient($conn, $values){
-        $qry = "INSERT INTO `patient`(`patient_id`, `house_number`, `street`, `city`, `province`, `first_name`, `last_name`, `gender`, `insurance`, `SSN`, `email_address`, `date_of_birth`, `phone_number`)
+    function newPatient($conn, $values, $bool){
+        $qry = "INSERT INTO `patient`(`patient_id`, `house_number`, `street`, `city`, `province`, `first_name`, `last_name`, `gender`, `insurance`, `SSN`, `email_address`, `date_of_birth`, `phone_number`, `password`)
             VALUES 
-            (3,".$values[0].",'".$values[1]."','".$values[2]."','".$values[3]."','".$values[4]."',
-             '".$values[5]."','".$values[6]."','".$values[7]."','".$values[8]."',".$values[9].",
-             '".$values[10]."',".$values[11].")";
+            (UUID_SHORT(),".$values[0].",'".$values[1]."','".$values[2]."','".$values[3]."','".$values[4]."',
+             '".$values[5]."','".$values[6]."','".$values[7]."',".$values[8].",'".$values[9]."',
+             '".$values[10]."',".$values[11].",'".$values[12]."')";
+
+
+        if($bool == 'Yes'){
+            $user = "INSERT INTO `user`(`user_id`, `first_name`, `last_name`, `password`) 
+            VALUES (UUID_SHORT(),'".$values[4]."','".$values[5]."','".$values[12]."')";
+
+            return $conn->query($qry) && $conn->query($user);
+        }
         return $conn->query($qry);
     }
 
@@ -101,13 +109,20 @@ class mysqlfunc
             VALUES 
             (UUID_SHORT(),".$values[0].",".$values[1].",'".$values[2]."','".$values[3]."','".$values[4]."',
              '".$values[5]."','".$values[6]."',".$values[7].",".$values[8].",'".$values[9]."','".$values[9]."','".$values[10]."','".$values[11]."')";
-        return $conn->query($qry);
+
+        $user = "INSERT INTO `user`(`user_id`, `first_name`, `last_name`, `password`) 
+            VALUES (UUID_SHORT(),'".$values[9]."','".$values[10]."','".$values[11]."')";
+
+        return $conn->query($qry) && $conn->query($user);
     }
 
-    function newAppt($conn, $values){
+    function newAppt($conn, $values, $name){
+        $pidFetch = $this->getPid($conn, $name);
+        $pid = $pidFetch->fetch_assoc();
+
         $qry = "INSERT INTO `appointment`(`appointment_id`, `patient_id`, `appt_year`, `appt_month`, `appt_day`, `start_hour`, `start_minute`, `appointment_type`, `status`) 
             VALUES 
-            (UUID_SHORT(),'12345',
+            (UUID_SHORT(),'". $pid['patient_id'] ."',
             ".$values[0].",".$values[1].",".$values[2].",
              ".$values[3].",".$values[4].",'".$values[5]."',
              'coming up')";
@@ -127,6 +142,16 @@ class mysqlfunc
     function cancelAppt($conn, $aid){
         $qry = "UPDATE `appointment` SET `status`='canceled' WHERE appointment_id = ".$aid.";";
         return $conn->query($qry);
+    }
+
+    function getRecords($conn){
+        $qry = "SELECT * FROM `record`";
+        return $conn->query($qry);
+    }
+
+    function getPid($conn, $name){
+        $sql = "SELECT `patient_id` FROM `patient` WHERE `first_name` = '". $name ."'";
+        return $conn->query($sql);
     }
 
 

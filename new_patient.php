@@ -46,7 +46,15 @@ include "mysqlfunc.php";
 
                                     <div class="col-3">
                                         <label for="prov" class="form-label">Province</label>
-                                        <input name="prov" type="text" class="form-control" id="prov" placeholder="" required="">
+                                        <select name="prov" class="form-control" id="prov" required="">
+                                            <option value="">Province</option>
+                                            <option>ON</option>
+                                            <option>QC</option>
+                                            <option>NL</option>
+                                            <option>BC</option>
+                                            <option>AB</option>
+                                            <option>MB</option>
+                                        </select>
                                         <div class="invalid-feedback">
                                             Please enter a valid province.
                                         </div>
@@ -102,6 +110,26 @@ include "mysqlfunc.php";
                                         </div>
                                     </div>
 
+                                    <div class="col-12">
+                                        <label for="pass" class="form-label">Password</label>
+                                        <input name="pass" type="password" class="form-control" id="pass" placeholder="Password" required="">
+                                        <div class="invalid-feedback">
+                                            Please enter a valid month.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="check" class="form-label">Create User Account?</label>
+                                        <select name="check" class="form-control" id="check" required="">
+                                            <option value="">..</option>
+                                            <option>Yes</option>
+                                            <option>No</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid month.
+                                        </div>
+                                    </div>
+
                                 <hr class="my-4">
 
                                 <button name="sub" class="w-100 btn btn-warning btn-lg" type="submit">Add Patient</button>
@@ -121,11 +149,11 @@ include "mysqlfunc.php";
                                 $ssn = preg_replace("/[^0-9]/", '', $_POST['ssn']);
                                 $phone = preg_replace("/[^0-9]/", '', $_POST['phone']);
 
-                                $values = [(int) $house_num, $street, strtolower($_POST['city']),
+                                $values = [$house_num, $street, strtolower($_POST['city']),
                                     strtolower($_POST['prov']),strtolower($_POST['fname']),strtolower($_POST['lname']),
-                                    $_POST['gender'],$_POST['insurance'], (int) $ssn,
-                                    $_POST['email'],$_POST['dob'],(int) $phone];
-                                if($sql->newPatient($conn, $values)){
+                                    $_POST['gender'],$_POST['insurance'], $ssn,
+                                    $_POST['email'],$_POST['dob'],$phone, $pass];
+                                if($sql->newPatient($conn, $values, $_POST['check'])){
                                     echo "<div class='h5 text-light'> Successfully Created Patient </div>";
                                 }
 

@@ -47,9 +47,11 @@ include "mysqlfunc.php";
                                         $hp = hash('sha256', $_POST['pass']);
                                         $pass_chk = $sql->isUserPass($conn, $_POST['user']);
                                         if ($pass_chk['password'] == $hp ) {
-                                            if ($sql->admin($conn, $_POST['user']))
-                                                header("Location:admin.php?user=" . $_POST['user'] . "&admin=true");
-                                            else header("Location:index.php?user=" . $_POST['user'] . "&admin=false");
+                                            $uType = $sql->admin($conn, $_POST['user']);
+                                            if($uType == '')
+                                                header("Location:index.php?user=" . $_POST['user'] . "&admin=patient");
+                                            else
+                                                header("Location:index.php?user=" . $_POST['user'] . "&admin=".$uType);
 
                                         } else {
                                             err();

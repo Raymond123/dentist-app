@@ -59,7 +59,7 @@ include "mysqlfunc.php";
                     $sql = new mysqlfunc();
                     $conn = $sql->mysqlCon();
 
-                    if($sql->newAppt($conn, $values)){
+                    if($sql->newAppt($conn, $values, $_GET['user'])){
                         echo "<div class='h5 text-light'> Successfully Created Appointment </div>";
                     }
                 }

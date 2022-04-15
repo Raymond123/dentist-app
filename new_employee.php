@@ -8,6 +8,10 @@ $conn = $sql->mysqlCon();
     <main>
         <div class="container-fluid">
             <div class="col">
+                <br>
+                <?php
+                echo '<a href="admin.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="btn btn-dark">Return</a>';
+                ?>
                 <div class="row">
                     <div class="col"></div>
                     <div class="col container mt-5 text-light p-4 rounded">

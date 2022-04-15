@@ -6,6 +6,10 @@ include "mysqlfunc.php";
 <main>
     <div class="container-fluid">
         <div class="col">
+            <br>
+            <?php
+            echo '<a href="index.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'" class="btn btn-dark">Return</a>';
+            ?>
             <div class="row">
                 <div class="col"></div>
                 <div class="col container mt-5 text-light p-4 rounded">
@@ -61,6 +65,8 @@ include "mysqlfunc.php";
 
                     if($sql->newAppt($conn, $values, $_GET['user'])){
                         echo "<div class='h5 text-light'> Successfully Created Appointment </div>";
+                    }elseif($_GET['admin'] != 'patient'){
+                        echo "<div class='h5 text-light'> Only Patients can Create Appointments </div>";
                     }
                 }
                 ?>

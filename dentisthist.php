@@ -23,9 +23,10 @@ include "mysqlfunc.php";
         echo '    <th scope="col">Email</th>';
         echo '    <th scope="col">Date of Birth</th>';
         echo '    <th scope="col">Phone #</th>';
+
         echo '</tr>';
         echo '</thead>';
-        function newRow($id, $house, $street, $city, $prov, $fname, $lname, $gender, $insurance, $ssn, $email, $dob, $phone){
+        function newRow($id, $house, $street, $city, $prov, $fname, $lname, $gender, $insurance, $ssn, $email, $dob, $phone, $tf){
             echo '<tr>';
             echo '    <td>'.$id.'</td>';
             echo '    <td>'.$house.'</td>';
@@ -40,6 +41,7 @@ include "mysqlfunc.php";
             echo '    <td>'.$email.'</td>';
             echo '    <td>'.$dob.'</td>';
             echo '    <td>'.$phone.'</td>';
+            if($tf) echo '    <td><a href="newrecord.php?user='.$_GET['user'].'&admin='.$_GET['admin'].'&aid='.$id.'&type='.$email.'&pid='.$house.'" class="btn btn-dark">NR</a></td>';
             echo '</tr>';
         }
 
@@ -50,7 +52,7 @@ include "mysqlfunc.php";
         while($patient = $employees->fetch_assoc()){
             newRow($patient['patient_id'], $patient['house_number'],$patient['street'],$patient['city'], $patient['province'],
                 $patient['first_name'],$patient['last_name'], $patient['gender'],$patient['insurance'],
-                $patient['SSN'], $patient['email_address'], $patient['date_of_birth'],$patient['phone_number']);
+                $patient['SSN'], $patient['email_address'], $patient['date_of_birth'],$patient['phone_number'], false);
         } // change 3
         echo '</table>';
 
@@ -70,11 +72,14 @@ include "mysqlfunc.php";
 
         $appointments = $sql->getRecords($conn);
 
-        function newRec($pid, $tid, $note, $ssn){
+        function newRec($pid, $tid, $note, $ssn): void
+        {
+            echo '<tr>';
             echo "<td>".$pid."</td>";
             echo "<td>".$tid."</td>";
             echo "<td>".$note."</td>";
             echo "<td>".$ssn."</td>";
+            echo '</tr>';
         }
 
         while($rec = $appointments->fetch_assoc()){
@@ -104,6 +109,7 @@ include "mysqlfunc.php";
         echo '    <th scope="col">Type</th>';
         echo '    <th scope="col">Status</th>';
         echo '    <th scope="col">Assigned Room</th>';
+        echo '    <th scope="col">New Record</th>';
         echo '</tr>';
         echo '</thead>';
 
@@ -111,9 +117,12 @@ include "mysqlfunc.php";
 
 
         while($apt = $appointments->fetch_assoc()){
-            newRow($apt['appointment_id'], $apt['patient_id'], $apt['dentist'], $apt['appt_year'],
-                $apt['appt_month'], $apt['appt_day'], $apt['start_hour'], $apt['start_minute'],
-                $apt['end_hour'], $apt['end_minute'], $apt['appointmnet_type'], $apt['status'], $apt['room_assigned']);
+            $fname = explode(" ", $apt['dentist']);
+            if($fname[0] == $_GET['user']) {
+                newRow($apt['appointment_id'], $apt['patient_id'], $apt['dentist'], $apt['appt_year'],
+                    $apt['appt_month'], $apt['appt_day'], $apt['start_hour'], $apt['start_minute'],
+                    $apt['end_hour'], $apt['end_minute'], $apt['appointment_type'], $apt['status'], $apt['room_assigned'], true);
+           }
         }
 
         echo "</table>" ;

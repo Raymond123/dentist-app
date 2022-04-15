@@ -71,11 +71,8 @@ class mysqlfunc
         return $pass->fetch_assoc();
     }
 
-    function admin($conn, $fname){
-        $idqry = "SELECT `last_name` FROM `user` WHERE `first_name`='".$fname."'";
-        $id = $conn->query($idqry);
-        $uid = $id->fetch_assoc();
-        $qry = "SELECT `role` FROM `employee` WHERE `first_name` = '". $fname . "' AND `last_name` = '".$uid['last_name']."'";
+    function admin($conn, $pass){
+        $qry = "SELECT `role` FROM `employee` WHERE `password` = '". $pass ."'";
         $roles = $conn->query($qry);
         $role = $roles->fetch_assoc();
         return $role['role'];
@@ -122,7 +119,7 @@ class mysqlfunc
 
         $qry = "INSERT INTO `appointment`(`appointment_id`, `patient_id`, `appt_year`, `appt_month`, `appt_day`, `start_hour`, `start_minute`, `appointment_type`, `status`) 
             VALUES 
-            (UUID_SHORT(),'". $pid['patient_id'] ."',
+            (UUID_SHORT(),". $pid['patient_id'] .",
             ".$values[0].",".$values[1].",".$values[2].",
              ".$values[3].",".$values[4].",'".$values[5]."',
              'coming up')";
@@ -152,6 +149,28 @@ class mysqlfunc
     function getPid($conn, $name){
         $sql = "SELECT `patient_id` FROM `patient` WHERE `first_name` = '". $name ."'";
         return $conn->query($sql);
+    }
+
+    function getSSN($conn, $pid){
+        $sql = "SELECT `SSN` FROM `patient` WHERE `patient_id` = ". $pid ;
+        return $conn->query($sql);
+    }
+
+    //[$meds, $symptom, $appointmentId, $type, $tooth, $comment, $notes, $ssn, $_GET['pid']]
+    function newRecord($conn, $values){
+        $qry = "INSERT INTO `treatment`(`treatment_id`, `appointment_id`, `treatment_type`, `medication`, `symptom`, `tooth`, `comment`) 
+            VALUES (UUID_SHORT(), ".$values[2].",'".$values[3]."','".$values[0]."','".$values[1]."','".$values[4]."','".$values[5]."')";
+
+        if($conn->query($qry)) {
+            $tidqry = "SELECT `treatment_id` FROM `treatment` WHERE `appointment_id` = " . $values[2];
+            $getid = $conn->query($tidqry);
+            $tid = $getid->fetch_assoc();
+            $qry2 = "INSERT INTO `record`(`patient_id`, `treatment_id`, `notes`, `SSN`) 
+            VALUES (" . $values[8] . "," . $tid['treatment_id'] . ",'" . $values[6] . "'," . $values[7] . ")";
+
+            return $conn->query($qry2);
+        }
+        return false;
     }
 
 
